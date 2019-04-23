@@ -4,15 +4,13 @@ const db = require("../models");
 
 module.exports = function(app){
 
-    app.get("/", function(req, res) {
-          res.render("index");
-    });
+    app.get("/", (req, res) => {
 
-    app.get("/scrape", (req, res) => {
-
-        axios.get("http://www.nytimes.com/").then(response => {
+        axios.get("https://nytimes.com/").then(response => {
         
         const $ = cheerio.load(response.data);
+
+        const array = [];
 
         $("article").each((i, element) => {
         
@@ -20,21 +18,18 @@ module.exports = function(app){
 
             result.title = $(element).children().text();
             result.link = $(element).find("a").attr("href");
+            result.summary = $(element).find("p").text();
 
-            console.log(result);
+            // console.log(result);
 
-            db.Article.create(result)
-            .then(dbArticle => {
-            
-                console.log(dbArticle);
-            })
-            .catch(err => {
-                
-                console.log(err);
-            });
+            array.push(result);
         });
+
+        const hbsArticles = {
+            Articles: array.slice(0, 3)
+        };
     
-        res.send("Scrape Complete");
+        res.render("index", hbsArticles);
         });
     });
     
@@ -42,7 +37,6 @@ module.exports = function(app){
         
         db.Article.find({})
         .then(dbArticle => {
-    
             res.json(dbArticle);
         })
         .catch(err => {

@@ -1,0 +1,21 @@
+.articles{
+    font-size: 20px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.summary{
+    font-size: 10;
+}
+
+#navbar{
+    padding: 20px;
+}
+
+#home{
+    font-size: 20px;
+}
+
+#saved{
+    font-size: 15px;
+}

@@ -1,0 +1,27 @@
+
+<nav id="navbar" class="bg-primary navbar navbar-expand-lg navbar-light">
+  <a class=" text-light navbar-brand" href="/"></a>
+  <div class="navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a id="home" class="nav-link text-light" href="/">News Scraper<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+            <a id="home" class="nav-link text-light" href="/saved">Saved</a>
+        </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="jumbotron">
+    {{#each Articles}}
+        <div class="card shadow-lg m-3">
+            <div class="card-body bg-primary">
+                <p class="card-text"><a class="text-light articles" href="https://www.nytimes.com{{link}}">{{title}}</a></p>
+            </div>
+            <div class="card-footer summary text-dark">
+                {{summary}}
+            </div>
+        </div>
+    {{/each}}
+</div>
