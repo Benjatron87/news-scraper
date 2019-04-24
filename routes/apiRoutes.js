@@ -4,40 +4,72 @@ const db = require("../models");
 
 module.exports = function(app){
 
-    app.get("/", (req, res) => {
+    app.get("/", function(req, res){
 
-        axios.get("https://nytimes.com/").then(response => {
-        
-        const $ = cheerio.load(response.data);
+        db.Article.find({})
+        .then(data => {
 
-        const array = [];
+            let num = data.length;
 
-        $("article").each((i, element) => {
-        
-            const result = {};
+            const result = {
+                Articles: data.slice(num - 5, num)
+            }
 
-            result.title = $(element).children().text();
-            result.link = $(element).find("a").attr("href");
-            result.summary = $(element).find("p").text();
-
-            // console.log(result);
-
-            array.push(result);
+            res.render("index", result);
+        })
+        .catch(err => {
+            res.json(err);
         });
+    })
 
-        const hbsArticles = {
-            Articles: array.slice(0, 3)
-        };
-    
-        res.render("index", hbsArticles);
+    app.get("/saved", function(req, res){
+
+        db.Article.find({})
+        .then(data => {
+            const result = {
+                Articles: data
+            }
+
+            res.render("saved", result);
+        })
+        .catch(err => {
+            res.json(err);
+        });
+    })
+
+    app.get("/scrape", (req, res) => {
+
+        axios.get("https://nytimes.com/section/world/americas").then(response => {
+        
+            const $ = cheerio.load(response.data);
+        
+            $(".css-ye6x8s").each((i, element) => {
+            
+                const result = {};
+
+                result.title = $(element).find("h2").text().trim();
+                result.link = $(element).find("a").attr("href");
+                result.summary = $(element).find("p").text().trim();
+                result.saved = false;
+
+                db.Article.create(result)
+                .then(data => {
+                })
+                .catch(err => {
+            
+                console.log(err);
+                });
+            });
+
+            res.send("Scrape Complete");
         });
     });
     
     app.get("/articles", (req, res) => {
         
         db.Article.find({})
-        .then(dbArticle => {
-            res.json(dbArticle);
+        .then(data => {
+            res.json(data);
         })
         .catch(err => {
             res.json(err);
@@ -47,29 +79,27 @@ module.exports = function(app){
     app.get("/articles/:id", (req, res) => {
 
         db.Article.findOne({ _id: req.params.id })
-    
-        .populate("note")
-        .then(dbArticle => {
+        .then(data => {
+            console.log(data.saved);
 
-            res.json(dbArticle);
-        })
-        .catch(err => {
+            res.json(data);
+          })
+          .catch(err => {
             res.json(err);
-        });
+          });
     });
-    
-    app.post("/articles/:id", (req, res) => {
 
-        db.Note.create(req.body)
-        .then(dbNote => {
+    app.put("/articles/:id", (req, res) => {
 
-            return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
-        })
-        .then(dbArticle => {
-            res.json(dbArticle);
-        })
-        .catch(err => {
+        db.Article.findOneAndUpdate({ _id: req.params.id }, {saved: req.body.saved}, { new: true })
+          .then(data => {
+            console.log(data)
+              res.json(data);
+          })
+          .catch(err => {
+           
             res.json(err);
-        });
+          });
     });
 }
+  

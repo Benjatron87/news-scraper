@@ -12,10 +12,20 @@
     padding: 20px;
 }
 
-#home{
+#home, #scrape{
     font-size: 20px;
+    cursor: pointer;
 }
 
 #saved{
     font-size: 15px;
+}
+
+#header{
+    color: white;
+    margin: 0;
+}
+
+.save-button, .unsave-button{
+    float: right;
 }

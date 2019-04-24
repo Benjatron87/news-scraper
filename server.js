@@ -2,6 +2,8 @@ const express = require("express");
 const exphbs = require("express-handlebars");
 const mongoose = require('mongoose');
 
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoArticles";
+
 const PORT = process.env.PORT || 8080;
 
 const app = express();
@@ -13,8 +15,6 @@ app.use(express.json());
 
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
-
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoArticles";
 
 mongoose.connect(MONGODB_URI);
 

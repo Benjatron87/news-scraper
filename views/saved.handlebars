@@ -22,20 +22,17 @@
 
 <div class="jumbotron">
     {{#each Articles}}
-        <div class="card shadow-lg m-5">
-            <div class="card-body bg-primary">
-                <p class="card-text"><a class="text-light articles" href="https://www.nytimes.com{{link}}">{{title}}</a><button class="save-button btn btn-secondary" data-id="{{id}}">
-                    {{#if saved}}
-                    Already Saved
-                    {{/if}}
-                    {{#unless saved}}
-                    Save Article
-                    {{/unless}}
+        {{#if saved}}
+            <div class="card shadow-lg m-5">
+                <div class="card-body bg-primary">
+                    <p class="card-text"><a class="text-light articles" href="https://www.nytimes.com{{link}}">{{title}}</a><button class="unsave-button btn btn-secondary" data-id="{{id}}">
+                    Unsave
                 </button></p>
+                </div>
+                <div class="card-footer summary text-dark">
+                    {{summary}}
+                </div>
             </div>
-            <div class="card-footer summary text-dark">
-                {{summary}}
-            </div>
-        </div>
+        {{/if}}
     {{/each}}
 </div>
